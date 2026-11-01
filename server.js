@@ -1,24 +1,32 @@
+app.get("/api/schedule-test", async (req, res) => {
+  try {
+    const url =
+      "https://proxy.streamvideo.co.in/fetch/api.penpencil.co/v1/batches/698ad3519549b300a5e1cc6a/todays-schedule?isNewStudyMaterialFlow=true";
 
-import express from "express";
+    const response = await fetch(url, {
+      headers: {
+        "accept": "application/json",
+        "client-id": "5eb393ee95fab7468a79d189",
+        "client-type": "WEB",
+        "client-version": "2.2.7",
+        "origin": "https://pwthor.live"
+      }
+    });
 
-const app = express();
+    const body = await response.text();
 
-app.get("/api/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "Node.js server is running!",
-    hosting: "Render"
-  });
-});
+    res.status(200).json({
+      success: response.ok,
+      upstreamStatus: response.status,
+      contentType: response.headers.get("content-type"),
+      cloudflareRay: response.headers.get("cf-ray"),
+      response: body.slice(0, 3000)
+    });
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "online"
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
