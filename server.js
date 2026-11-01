@@ -1,3 +1,25 @@
+
+import express from "express";
+
+const app = express();
+
+// Homepage
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Render Node.js server is online"
+  });
+});
+
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({
+    success: true,
+    status: "online"
+  });
+});
+
+// Schedule API diagnostic
 app.get("/api/schedule-test", async (req, res) => {
   try {
     const url =
@@ -5,11 +27,11 @@ app.get("/api/schedule-test", async (req, res) => {
 
     const response = await fetch(url, {
       headers: {
-        "accept": "application/json",
+        accept: "application/json",
         "client-id": "5eb393ee95fab7468a79d189",
         "client-type": "WEB",
         "client-version": "2.2.7",
-        "origin": "https://pwthor.live"
+        origin: "https://pwthor.live"
       }
     });
 
@@ -29,4 +51,11 @@ app.get("/api/schedule-test", async (req, res) => {
       error: error.message
     });
   }
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
